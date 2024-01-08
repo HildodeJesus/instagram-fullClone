@@ -2,8 +2,10 @@ import "dotenv/config";
 
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import helmet from "helmet";
+
+import userRoutes from "./routes/userRoutes";
+import { handleErrors } from "./middlewares/handleErrors";
 
 export class App {
 	server: express.Application;
@@ -15,9 +17,13 @@ export class App {
 	}
 
 	private middleware() {
+		this.server.use(express.urlencoded({ extended: false }));
+		this.server.use(express.json());
 		this.server.use(cors());
 		this.server.use(helmet());
-		this.server.use(bodyParser.urlencoded({ extended: true }));
 	}
-	private router() {}
+	private router() {
+		this.server.use(userRoutes);
+		this.server.use(handleErrors);
+	}
 }
